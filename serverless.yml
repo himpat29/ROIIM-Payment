@@ -1,0 +1,37 @@
+app: api-gateway-testing-app
+service: api-gateway-test
+
+package:
+  exclude:
+    - venv/**
+    - node_modules/**
+
+plugins:
+  - serverless-offline-scheduler
+  - serverless-python-requirements
+  - serverless-offline
+
+custom:
+  serverless-offline:
+    port: 3003
+  pythonRequirements:
+    dockerizePip: non-linux
+    slim: true
+  customStage: ${opt:stage, self:provider.stage}
+  
+
+provider:
+  name: aws
+  runtime: python3.7
+  stage: dev
+  region: ap-south-1
+
+    
+functions:
+  listner-function:
+    handler: echo.main
+    events:
+      - http:
+          path: /
+          method: any
+          cors: true
